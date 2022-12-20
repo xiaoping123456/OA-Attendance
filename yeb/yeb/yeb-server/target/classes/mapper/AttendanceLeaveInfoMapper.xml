@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.xiaoping.server.mapper.AttendanceLeaveInfoMapper">
+
+    <resultMap id="applyInfoWithAdmin" type="com.xiaoping.server.pojo.attendance.AttendanceLeaveInfo"
+        autoMapping="true">
+        <result property="username" column="adminName" />
+
+    </resultMap>
+
+    <select id="getApply" resultMap="applyInfoWithAdmin">
+        select info.*, admin.id as adminId, admin.name as adminName
+            from t_attendance_leave_info as info left join t_admin as admin on admin.id = info.userId
+        <where>
+            <if test="type != null"> info.status = #{type}</if>
+             <if test="keyword != null and keyword != '' ">
+                and admin.name like concat('%', #{keyword}, '%')
+             </if>
+        </where>
+        order by info.createTime desc
+    </select>
+
+</mapper>
